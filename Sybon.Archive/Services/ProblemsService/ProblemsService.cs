@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using JetBrains.Annotations;
 using Sybon.Archive.Repositories.ProblemsRepository;
+using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.InternalProblemsService;
 using Sybon.Common;
 using Problem = Sybon.Archive.Services.ProblemsService.Models.Problem;
@@ -14,13 +16,15 @@ namespace Sybon.Archive.Services.ProblemsService
     {
         private readonly IRepositoryUnitOfWork _repositoryUnitOfWork;
         private readonly IInternalProblemsService _internalProblemsService;
+        private readonly ICollectionsService _collectionsService;
         private readonly IMapper _mapper;
 
-        public ProblemsService(IRepositoryUnitOfWork repositoryUnitOfWork, IMapper mapper, IInternalProblemsService internalProblemsService)
+        public ProblemsService(IRepositoryUnitOfWork repositoryUnitOfWork, IMapper mapper, IInternalProblemsService internalProblemsService, ICollectionsService collectionsService)
         {
             _repositoryUnitOfWork = repositoryUnitOfWork;
             _mapper = mapper;
             _internalProblemsService = internalProblemsService;
+            _collectionsService = collectionsService;
         }
 
         public async Task<string> GetStatementUrlAsync(long id)
@@ -41,6 +45,11 @@ namespace Sybon.Archive.Services.ProblemsService
 
         public async Task<long> AddAsync(long collectionId, string internalProblemId)
         {
+            if(!_internalProblemsService.Exists(internalProblemId))
+                throw new KeyNotFoundException("Problem not found");
+            if(!await _collectionsService.ExistsAsync(collectionId))
+                throw new KeyNotFoundException("Collection not found");
+            
             var dbEntry = new Repositories.ProblemsRepository.Problem
             {
                 CollectionId = collectionId,

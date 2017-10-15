@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Bacs.Archive.Client.CSharp;
 using Bacs.Problem.Single;
 using Bacs.StatementProvider;
 using Google.Protobuf;
 using JetBrains.Annotations;
+using Sybon.Archive.Repositories.CollectionsRepository;
 using Sybon.Archive.Services.ProblemsService.Models;
 
 namespace Sybon.Archive.Services.InternalProblemsService
@@ -58,6 +60,13 @@ namespace Sybon.Archive.Services.InternalProblemsService
             var internalProblem = info.SingleOrDefault(x => x.Key == problem.InternalProblemId).Value.Problem;
             if (internalProblem == null) throw new ArgumentException($"Problem with internal id '{problem.InternalProblemId}' was not found. Problem id is '{problem.Id}'.");
             return ExtractStatementUrl(internalProblem);
+        }
+
+        public bool Exists(params string[] problemsIds)
+        {
+            var sortedProblemsIds = problemsIds.OrderBy(x => x);
+            var existing = _archiveClient.Existing(problemsIds).OrderBy(x => x);
+            return sortedProblemsIds.SequenceEqual(existing);
         }
 
         private string ExtractStatementUrl([NotNull] Bacs.Problem.Problem internalProblem)

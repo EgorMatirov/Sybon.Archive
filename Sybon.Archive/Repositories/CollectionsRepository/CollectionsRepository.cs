@@ -28,5 +28,10 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
                 .Take(limit)
                 .ToArrayAsync();
         }
+
+        public Task<bool> ExistsAsync(long id)
+        {
+            return Context.Collections.AnyAsync(x => x.Id == id);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Sybon.Archive.Services.ProblemsService.Models;
+﻿using System.Collections.Generic;
+using Sybon.Archive.Services.ProblemsService.Models;
 
 namespace Sybon.Archive.Services.InternalProblemsService
 {
@@ -6,5 +7,6 @@ namespace Sybon.Archive.Services.InternalProblemsService
     {
         Problem FetchProblemInfo(Problem problem);
         string ExtractStatementUrl(Problem problem);
+        bool Exists(params string[] problemsIds);
     }
 }

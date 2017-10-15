@@ -102,6 +102,8 @@ namespace Sybon.Archive
                 config.CreateMap<ProblemCollection, Collection>();
                 config.CreateMap<Problem, Services.ProblemsService.Models.Problem>();
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
+                config.CreateMap<CollectionForm, Collection>();
+                config.CreateMap<CollectionForm.ProblemModel, Problem>();
             });
             return Mapper.Instance;
         }

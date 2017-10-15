@@ -43,7 +43,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter(true)]
-        public async Task<IActionResult> Add([FromServices] ICollectionsService collectionsService, [FromBody] ProblemCollection collection)
+        public async Task<IActionResult> Add([FromServices] ICollectionsService collectionsService, [FromBody] CollectionForm collection)
         {
             var id = await collectionsService.AddAsync(UserId, collection);
             return Ok(id);
@@ -63,11 +63,11 @@ namespace Sybon.Archive.Controllers
 
         public long UserId { get; set; }
         public string ApiKey { get; set; }
-    }
 
-    public class Pagination
-    {
-        public int Offset { get; [UsedImplicitly] set; } = 0;
-        public int Limit { get; [UsedImplicitly] set; } = 10;
+        public class Pagination
+        {
+            public int Offset { get; [UsedImplicitly] set; } = 0;
+            public int Limit { get; [UsedImplicitly] set; } = 10;
+        }
     }
 }

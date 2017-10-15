@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JetBrains.Annotations;
@@ -23,9 +24,13 @@ namespace Sybon.Archive.Services.CollectionsService
             _internalProblemsService = internalProblemsService;
         }
 
-        public async Task<long> AddAsync(long userId, ProblemCollection collection)
+        public async Task<long> AddAsync(long userId, CollectionForm collection)
         {
             // TODO: Add permission by userId?
+            var problemsIds = collection.Problems.Select(x => x.InternalProblemId).ToArray();
+            var allProblemsExists = _internalProblemsService.Exists(problemsIds);
+            if(!allProblemsExists)
+                throw new KeyNotFoundException("Problem not found");
             var dbEntry = _mapper.Map<Collection>(collection);
             await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().AddAsync(dbEntry);
             await _repositoryUnitOfWork.SaveChangesAsync();
@@ -48,6 +53,11 @@ namespace Sybon.Archive.Services.CollectionsService
             var dbEntries = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().GetRangeAsync(offset, limit);
             var mapped = dbEntries.Select(e => _mapper.Map<ProblemCollection>(e));
             return mapped.ToArray();
+        }
+
+        public Task<bool> ExistsAsync(long id)
+        {
+            return _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().ExistsAsync(id);
         }
     }
 }
