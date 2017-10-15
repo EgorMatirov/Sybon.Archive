@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
 using Bacs.StatementProvider;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,11 +27,23 @@ namespace Sybon.Archive
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            SecurityConfiguration = new ArchiveSecurityConfiguration(configuration.GetSection("Security"));
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
+        private ArchiveSecurityConfiguration SecurityConfiguration { get; }
+
+        private Configuration AuthClientConfiguration => new Configuration
+        {
+            BasePath = SecurityConfiguration.SybonAuth.Url,
+            ApiKey = new Dictionary<string, string>
+            {
+                {"api_key", SecurityConfiguration.ApiKey}
+            }
+        };
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        [UsedImplicitly]
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
@@ -57,34 +71,15 @@ namespace Sybon.Archive
             services.AddScoped<ICollectionsRepository, CollectionsRepository>();
             services.AddScoped<ICollectionsService, CollectionsService>();
 
-            var authApiConfiguration = new Configuration
-            {
-                BasePath = Configuration.GetConnectionString("Sybon.AuthUrl"),
-                ApiKey = new Dictionary<string, string>
-                {
-                    {"api_key", Configuration.GetConnectionString("ApiKey")}
-                }
-            };
-            services.AddSingleton<IAccountApi>(new AccountApi(authApiConfiguration));
-            services.AddSingleton<IPermissionsApi>(new PermissionsApi(authApiConfiguration));
-
-            var clientCert = Configuration.GetConnectionString("Bacs.ArchiveClientCertPath");
-            var clientKey =  Configuration.GetConnectionString("Bacs.ArchiveClientKeyPath");
-            var ca =  Configuration.GetConnectionString("Bacs.ArchiveCAPath");
-            var host =  Configuration.GetConnectionString("Bacs.ArchiveHost");
-            var port = Configuration.GetSection("ConnectionStrings").GetValue<int>("Bacs.ArchivePort");
-            services.AddSingleton<IArchiveClient, IArchiveClient>(provider => ArchiveClientFactory.CreateFromFiles(host, port, clientCert, clientKey, ca));
-
-            var baseStatementUrl = Configuration.GetConnectionString("Bacs.StatementBaseUrl");
-            var statementRefferer = Configuration.GetConnectionString("Bacs.StatementRefferer");
-            var statementKey =Configuration.GetConnectionString("Bacs.StatemenKey");
-            services.AddSingleton(new StatementProvider(baseStatementUrl, statementRefferer, statementKey));
-            
-            ConfigureMapper();
-            services.AddSingleton(Mapper.Instance);
+            services.AddSingleton<IAccountApi>(new AccountApi(AuthClientConfiguration));
+            services.AddSingleton<IPermissionsApi>(new PermissionsApi(AuthClientConfiguration));
+            services.AddSingleton<IArchiveClient, IArchiveClient>(CreateArchiveClient);
+            services.AddSingleton<StatementProvider, StatementProvider>(CreateStatementProvider);
+            services.AddSingleton<IMapper, IMapper>(CreateMapper);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -99,7 +94,7 @@ namespace Sybon.Archive
             app.UseMvc();
         }
         
-        private static void ConfigureMapper()
+        private static IMapper CreateMapper(IServiceProvider serviceProvider)
         {
             Mapper.Initialize(config =>
             {
@@ -108,6 +103,26 @@ namespace Sybon.Archive
                 config.CreateMap<Problem, Services.ProblemsService.Models.Problem>();
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
             });
+            return Mapper.Instance;
         }
+        
+        private IArchiveClient CreateArchiveClient(IServiceProvider serviceProvider)
+        {
+            var config = SecurityConfiguration.BacsArchive;
+            return ArchiveClientFactory.CreateFromFiles(
+                config.Host,
+                config.Port,
+                config.ClientCertificatePath,
+                config.ClientKeyPath,
+                config.CAPath
+            );
+        }
+        
+        private StatementProvider CreateStatementProvider(IServiceProvider serviceProvider)
+        {
+            var config = SecurityConfiguration.BacsStatement;
+            return new StatementProvider(config.Url, config.Refferer, config.Key);
+        }
+
     }
 }
