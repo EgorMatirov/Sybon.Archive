@@ -29,7 +29,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ProblemCollection))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
-        //[PermissionFilter("collection", "read", "id")] //TODO
+        [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Read, "id")]
         public async Task<IActionResult> Get([FromServices] ICollectionsService collectionsService, long id)
         {
             var collection = await collectionsService.FindAsync(id);
@@ -54,7 +54,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
-        //[PermissionFilter("collection", "write", "collectionId")] //TODO
+        [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Write, "collectionId")]
         public async Task<IActionResult> AddProblem([FromServices] IProblemsService problemsService, long collectionId, [FromQuery] string internalProblemId)
         {
             var problemId = await problemsService.AddAsync(collectionId, internalProblemId);
