@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
 using Bacs.StatementProvider;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -82,10 +85,24 @@ namespace Sybon.Archive
         [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            // TODO: Move to Sybon.Common
+            // TODO: Filter exceptions and do not log system exceptions (db problems \ etc)
+            app.UseExceptionHandler(
+                builder =>
+                {
+                    builder.Run(
+                        async context =>
+                        {
+                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            context.Response.ContentType = "text/html";
+
+                            var error = context.Features.Get<IExceptionHandlerFeature>();
+                            if (error != null)
+                            {
+                                await context.Response.WriteAsync($"{{\"error\": \"{error.Error.Message}\"}}").ConfigureAwait(false);
+                            }{}
+                        });
+                });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
