@@ -43,8 +43,8 @@ namespace Sybon.Archive
             if (_adminOnly)
             {
                 var permissionsApi = (IPermissionsApi) context.HttpContext.RequestServices.GetService(typeof(IPermissionsApi));
-                var userRole = permissionsApi.GetUserRoleAsync(controller.UserId).Result;
-                if (userRole != "1")
+                var userRole = permissionsApi.GetUserRole(controller.UserId);
+                if (userRole != "Admin")
                     context.Result = new UnauthorizedResult();
             }
         }
