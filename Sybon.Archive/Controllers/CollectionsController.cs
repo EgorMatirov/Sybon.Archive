@@ -50,7 +50,7 @@ namespace Sybon.Archive.Controllers
         }
 
         [HttpPost("{collectionId}/problems")]
-        [SwaggerOperation("GetById")]
+        [SwaggerOperation("AddProblem")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
