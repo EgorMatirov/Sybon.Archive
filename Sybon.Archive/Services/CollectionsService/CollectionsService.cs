@@ -37,10 +37,10 @@ namespace Sybon.Archive.Services.CollectionsService
             return dbEntry.Id;
         }
 
-        public async Task<ProblemCollection> FindAsync(long id)
+        public async Task<ProblemCollectionWithProblems> FindAsync(long id)
         {
             var dbEntry = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().FindAsync(id);
-            var problemCollection = _mapper.Map<ProblemCollection>(dbEntry);
+            var problemCollection = _mapper.Map<ProblemCollectionWithProblems>(dbEntry);
             problemCollection.Problems = problemCollection.Problems
                 .Select(_internalProblemsService.FetchProblemInfo)
                 .Where(x => x != null)
@@ -48,10 +48,10 @@ namespace Sybon.Archive.Services.CollectionsService
             return problemCollection;
         }
 
-        public async Task<ProblemCollection[]> GetRangeAsync(int offset, int limit)
+        public async Task<ProblemCollectionWithoutProblems[]> GetRangeAsync(int offset, int limit)
         {
             var dbEntries = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().GetRangeAsync(offset, limit);
-            var mapped = dbEntries.Select(e => _mapper.Map<ProblemCollection>(e));
+            var mapped = dbEntries.Select(e => _mapper.Map<ProblemCollectionWithoutProblems>(e));
             return mapped.ToArray();
         }
 

@@ -20,12 +20,19 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
                 .SingleOrDefaultAsync(collection => collection.Id == key);
         }
 
-        public Task<Collection[]> GetRangeAsync(int offset, int limit)
+        public Task<CollectionModelWithProblemsCount[]> GetRangeAsync(int offset, int limit)
         {
             return Context.Collections
                 .OrderBy(x => x.Id)
                 .Skip(offset)
                 .Take(limit)
+                .Select(x => new CollectionModelWithProblemsCount
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Name = x.Name,
+                    ProblemsCount = x.Problems.Count
+                })
                 .ToArrayAsync();
         }
 
