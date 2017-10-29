@@ -85,24 +85,6 @@ namespace Sybon.Archive
         [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // TODO: Move to Sybon.Common
-            // TODO: Filter exceptions and do not log system exceptions (db problems \ etc)
-            app.UseExceptionHandler(
-                builder =>
-                {
-                    builder.Run(
-                        async context =>
-                        {
-                            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            context.Response.ContentType = "text/html";
-
-                            var error = context.Features.Get<IExceptionHandlerFeature>();
-                            if (error != null)
-                            {
-                                await context.Response.WriteAsync($"{{\"error\": \"{error.Error.Message}\"}}").ConfigureAwait(false);
-                            }{}
-                        });
-                });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
