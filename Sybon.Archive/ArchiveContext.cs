@@ -21,7 +21,8 @@ namespace Sybon.Archive
             modelBuilder.Entity<Collection>()
                 .HasMany(x => x.Problems)
                 .WithOne(x => x.Collection)
-                .HasForeignKey(x => x.CollectionId);
+                .HasForeignKey(x => x.CollectionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

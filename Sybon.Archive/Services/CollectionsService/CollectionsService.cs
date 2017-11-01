@@ -59,5 +59,11 @@ namespace Sybon.Archive.Services.CollectionsService
         {
             return _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().ExistsAsync(id);
         }
+
+        public async Task RemoveRangeAsync(long[] collectionIds)
+        {
+            await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().RemoveRangeAsync(collectionIds);
+            _repositoryUnitOfWork.SaveChanges();
+        }
     }
 }

@@ -40,5 +40,11 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
         {
             return Context.Collections.AnyAsync(x => x.Id == id);
         }
+
+        public async Task RemoveRangeAsync(long[] collectionIds)
+        {
+            object[] dbEntities = await Context.Collections.Where(x => collectionIds.Contains(x.Id)).ToArrayAsync();
+            Context.RemoveRange(dbEntities);
+        }
     }
 }

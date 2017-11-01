@@ -49,6 +49,17 @@ namespace Sybon.Archive.Controllers
             return Ok(id);
         }
 
+        [HttpDelete]
+        [SwaggerOperation("Delete")]
+        [SwaggerResponse((int)HttpStatusCode.OK)]
+        [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
+        [AuthorizeFilter(true)]
+        public async Task<IActionResult> DeleteCollections([FromServices] ICollectionsService collectionsService, [FromBody] long[] collectionIds)
+        {
+            await collectionsService.RemoveRangeAsync(collectionIds);
+            return Ok();
+        }
+
         [HttpPost("{collectionId}/problems")]
         [SwaggerOperation("AddProblem")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]

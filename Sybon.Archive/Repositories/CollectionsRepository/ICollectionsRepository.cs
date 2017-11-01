@@ -7,5 +7,6 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
     {
         Task<CollectionModelWithProblemsCount[]> GetRangeAsync(int offset, int limit);
         Task<bool> ExistsAsync(long id);
+        Task RemoveRangeAsync(long[] collectionIds);
     }
 }
