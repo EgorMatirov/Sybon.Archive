@@ -71,6 +71,18 @@ namespace Sybon.Archive.Controllers
             var problemId = await problemsService.AddAsync(collectionId, internalProblemId);
             return Ok(problemId);
         }
+        
+        [HttpDelete("{collectionId}/problems")]
+        [SwaggerOperation("DeleteProblems")]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]
+        [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
+        [AuthorizeFilter]
+        [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Write, "collectionId")]
+        public async Task<IActionResult> DeleteProblems([FromServices] IProblemsService problemsService, long collectionId, [FromBody] long[] problemIds)
+        {
+            await problemsService.RemoveRangeAsync(problemIds);
+            return Ok();
+        }
 
         public long UserId { get; set; }
         public string ApiKey { get; set; }

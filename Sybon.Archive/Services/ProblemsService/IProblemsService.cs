@@ -8,5 +8,6 @@ namespace Sybon.Archive.Services.ProblemsService
         Task<string> GetStatementUrlAsync(long id);
         Task<Problem> GetAsync(long id);
         Task<long> AddAsync(long collectionId, string internalProblemId);
+        Task RemoveRangeAsync(long[] problemIds);
     }
 }

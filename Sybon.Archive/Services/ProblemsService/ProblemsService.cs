@@ -59,5 +59,11 @@ namespace Sybon.Archive.Services.ProblemsService
             await _repositoryUnitOfWork.SaveChangesAsync();
             return dbEntry.Id;
         }
+
+        public async Task RemoveRangeAsync(long[] problemIds)
+        {
+            await _repositoryUnitOfWork.GetRepository<IProblemsRepository>().RemoveRangeAsync(problemIds);
+            _repositoryUnitOfWork.SaveChanges();
+        }
     }
 }
