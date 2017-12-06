@@ -5,6 +5,7 @@ using AutoMapper;
 using JetBrains.Annotations;
 using Sybon.Archive.Repositories.ProblemsRepository;
 using Sybon.Archive.Services.CollectionsService;
+using Sybon.Archive.Services.GlobalCollectionService;
 using Sybon.Archive.Services.InternalProblemsService;
 using Sybon.Common;
 using Problem = Sybon.Archive.Services.ProblemsService.Models.Problem;
@@ -16,15 +17,17 @@ namespace Sybon.Archive.Services.ProblemsService
     {
         private readonly IRepositoryUnitOfWork _repositoryUnitOfWork;
         private readonly IInternalProblemsService _internalProblemsService;
+        private readonly IGlobalCollectionService _globalCollectionService;
         private readonly ICollectionsService _collectionsService;
         private readonly IMapper _mapper;
 
-        public ProblemsService(IRepositoryUnitOfWork repositoryUnitOfWork, IMapper mapper, IInternalProblemsService internalProblemsService, ICollectionsService collectionsService)
+        public ProblemsService(IRepositoryUnitOfWork repositoryUnitOfWork, IMapper mapper, IInternalProblemsService internalProblemsService, ICollectionsService collectionsService, IGlobalCollectionService globalCollectionService)
         {
             _repositoryUnitOfWork = repositoryUnitOfWork;
             _mapper = mapper;
             _internalProblemsService = internalProblemsService;
             _collectionsService = collectionsService;
+            _globalCollectionService = globalCollectionService;
         }
 
         public async Task<string> GetStatementUrlAsync(long id)
@@ -43,17 +46,20 @@ namespace Sybon.Archive.Services.ProblemsService
             return _internalProblemsService.FetchProblemInfo(_mapper.Map<Problem>(problem));
         }
 
-        public async Task<long> AddAsync(long collectionId, string internalProblemId)
+        public async Task<long> AddAsync(long collectionId, long globalProblemId)
         {
-            if(!_internalProblemsService.Exists(internalProblemId))
-                throw new KeyNotFoundException("Problem not found");
+            var globalProblem = await _globalCollectionService.GetProblemAsync(globalProblemId);
+            if(globalProblem == null)
+                throw new KeyNotFoundException("Global problem not found");
+            if(!_internalProblemsService.Exists(globalProblem.InternalProblemId))
+                throw new KeyNotFoundException("Internal problem not found");
             if(!await _collectionsService.ExistsAsync(collectionId))
                 throw new KeyNotFoundException("Collection not found");
             
             var dbEntry = new Repositories.ProblemsRepository.Problem
             {
                 CollectionId = collectionId,
-                InternalProblemId = internalProblemId
+                GlobalProblemId = globalProblem.Id
             };
             await _repositoryUnitOfWork.GetRepository<IProblemsRepository>().AddAsync(dbEntry);
             await _repositoryUnitOfWork.SaveChangesAsync();

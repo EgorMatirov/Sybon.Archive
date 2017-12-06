@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Sybon.Archive.Repositories.CollectionsRepository;
+using Sybon.Archive.Repositories.GlobalCollectionRepository;
 using Sybon.Archive.Repositories.ProblemsRepository;
 
 namespace Sybon.Archive
@@ -13,11 +14,12 @@ namespace Sybon.Archive
 
         public DbSet<Problem> Problems { get; [UsedImplicitly] set; }
         public DbSet<Collection> Collections { get; [UsedImplicitly] set; }
+        public DbSet<GlobalCollectionProblem> GlobalCollectionProblems { get; [UsedImplicitly] set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Problem>()
-                .HasIndex(x => x.InternalProblemId);
+                .HasIndex(x => x.GlobalProblemId);
             modelBuilder.Entity<Collection>()
                 .HasMany(x => x.Problems)
                 .WithOne(x => x.Collection)

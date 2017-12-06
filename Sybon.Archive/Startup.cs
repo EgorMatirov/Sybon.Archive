@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using Sybon.Archive.Repositories.CollectionsRepository;
+using Sybon.Archive.Repositories.GlobalCollectionRepository;
 using Sybon.Archive.Repositories.ProblemsRepository;
 using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.CollectionsService.Models;
@@ -102,6 +103,7 @@ namespace Sybon.Archive
                 config.CreateMap<ProblemCollectionWithProblems, Collection>();
                 config.CreateMap<Problem, Services.ProblemsService.Models.Problem>();
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
+                config.CreateMap<GlobalCollectionProblem, Problem>();
                 config.CreateMap<CollectionForm, Collection>();
                 config.CreateMap<CollectionForm.ProblemModel, Problem>();
             });

@@ -48,7 +48,7 @@ namespace Sybon.Archive.Controllers
             var id = await collectionsService.AddAsync(UserId, collection);
             return Ok(id);
         }
-
+        
         [HttpDelete]
         [SwaggerOperation("Delete")]
         [SwaggerResponse((int)HttpStatusCode.OK)]
@@ -66,9 +66,9 @@ namespace Sybon.Archive.Controllers
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
         [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Write, "collectionId")]
-        public async Task<IActionResult> AddProblem([FromServices] IProblemsService problemsService, long collectionId, [FromQuery] string internalProblemId)
+        public async Task<IActionResult> AddProblem([FromServices] IProblemsService problemsService, long collectionId, [FromQuery] long globalProblemId)
         {
-            var problemId = await problemsService.AddAsync(collectionId, internalProblemId);
+            var problemId = await problemsService.AddAsync(collectionId, globalProblemId);
             return Ok(problemId);
         }
         

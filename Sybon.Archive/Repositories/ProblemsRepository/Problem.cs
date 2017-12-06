@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Sybon.Archive.Repositories.CollectionsRepository;
+using Sybon.Archive.Services.GlobalCollectionService.Models;
 using Sybon.Auth;
 
 namespace Sybon.Archive.Repositories.ProblemsRepository
@@ -11,8 +12,7 @@ namespace Sybon.Archive.Repositories.ProblemsRepository
         public long Id { get; set; }
         public long? CollectionId { get; set; }
         public Collection Collection { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string InternalProblemId { get; set; }
+        public long GlobalProblemId { get; set; }
+        public GlobalCollectionProblem GlobalProblem { get; set; }
     }
 }

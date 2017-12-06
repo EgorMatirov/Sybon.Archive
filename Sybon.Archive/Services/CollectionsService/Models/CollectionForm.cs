@@ -14,7 +14,7 @@ namespace Sybon.Archive.Services.CollectionsService.Models
         [UsedImplicitly]
         public class ProblemModel
         {
-            public string InternalProblemId { get; set; }
+            public string GlobalProblemId { get; set; }
         }
     }
 }
