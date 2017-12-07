@@ -38,11 +38,18 @@ namespace Sybon.Archive.Services.InternalProblemsService
             var testGroups = ProfileExtension.Parser.ParseFrom(internalProblem.Profile.First().Extension.Value).TestGroup;
             var testsCount = testGroups.Sum(x => x.Tests.Query.Count);
 
-            var problemArchive = _archiveClient.Download(SevenZipArchive.ZipFormat, problem.InternalProblemId);
-            var pretestIds = testGroups.FirstOrDefault(x => x.Id == "pre")?.Tests?.Query?.Select(x => x.Id)?.ToArray();
-            var pretests = pretestIds == null ? null : _mapper.Map<Test[]>(_testsFetcher.FetchTests(problemArchive, problem.InternalProblemId, pretestIds).ToArray());
+            var pretestIds = testGroups.FirstOrDefault(x => x.Id == "pre")?.Tests?.Query?.Select(x => x.Id).ToArray();
+            Test[] pretests;
+            if (pretestIds == null)
+            {
+                pretests = new Test[0];
+            }
+            else
+            {
+                var archiveTests = _testsFetcher.FetchTests(_archiveClient, problem.InternalProblemId, pretestIds).ToArray();
+                pretests = _mapper.Map<Test[]>(archiveTests);
+            }
 
-            
             var resourceLimits = testGroups.First().Process.ResourceLimits;
 
             return new Problem
