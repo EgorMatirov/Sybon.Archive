@@ -28,9 +28,9 @@ namespace Sybon.Archive.Services.CollectionsService
         {
             // TODO: Add permission by userId?
             var problemsIds = collection.Problems.Select(x => x.GlobalProblemId).ToArray();
-            var allProblemsExists = _internalProblemsService.Exists(problemsIds);
-            if(!allProblemsExists)
-                throw new KeyNotFoundException("Problem not found");
+            //var allProblemsExists = _internalProblemsService.Exists(problemsIds);
+//            if(!allProblemsExists)
+//                throw new KeyNotFoundException("Problem not found");
             var dbEntry = _mapper.Map<Collection>(collection);
             await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().AddAsync(dbEntry);
             await _repositoryUnitOfWork.SaveChangesAsync();

@@ -9,6 +9,6 @@ namespace Sybon.Archive.Services.GlobalCollectionService
         Task<GlobalCollectionProblem[]> GetAllAsync();
         Task<long> AddAsync(string internalProblemId);
         Task RemoveRangeAsync(long[] problemIds);
-        Task<Problem> GetProblemAsync(long problemId);
+        Task<GlobalCollectionProblem> GetProblemAsync(long problemId);
     }
 }

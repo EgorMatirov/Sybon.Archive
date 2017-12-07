@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using Sybon.Archive.Repositories.CollectionsRepository;
-using Sybon.Archive.Services.GlobalCollectionService.Models;
+using Sybon.Archive.Repositories.GlobalCollectionRepository;
 using Sybon.Auth;
 
 namespace Sybon.Archive.Repositories.ProblemsRepository

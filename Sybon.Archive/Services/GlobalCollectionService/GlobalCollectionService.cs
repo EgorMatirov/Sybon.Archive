@@ -36,9 +36,9 @@ namespace Sybon.Archive.Services.GlobalCollectionService
             {
                 InternalProblemId = internalProblemId
             };
-            var id = await _repositoryUnitOfWork.GetRepository<IGlobalCollectionRepository>().AddAsync(dbEntry);
+            await _repositoryUnitOfWork.GetRepository<IGlobalCollectionRepository>().AddAsync(dbEntry);
             _repositoryUnitOfWork.SaveChanges();
-            return id;
+            return dbEntry.Id;
         }
 
         public async Task RemoveRangeAsync(long[] problemIds)
@@ -47,12 +47,12 @@ namespace Sybon.Archive.Services.GlobalCollectionService
             _repositoryUnitOfWork.SaveChanges();
         }
 
-        public async Task<Problem> GetProblemAsync(long problemId)
+        public async Task<GlobalCollectionProblem> GetProblemAsync(long problemId)
         {
             var problem = await _repositoryUnitOfWork.GetRepository<IGlobalCollectionRepository>().FindAsync(problemId);
             if(problem == null) throw new ArgumentException($"Problem with id = {problemId} does not exist");
             
-            return _internalProblemsService.FetchProblemInfo(_mapper.Map<Problem>(problem));
+            return _internalProblemsService.FetchProblemInfo(_mapper.Map<GlobalCollectionProblem>(problem));
         }
     }
 }

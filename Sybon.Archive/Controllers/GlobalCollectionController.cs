@@ -32,8 +32,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerOperation("AddProblem")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
-        [AuthorizeFilter]
-        [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Write, "collectionId")]
+        [AuthorizeFilter(true)]
         public async Task<IActionResult> AddProblem([FromServices] IGlobalCollectionService globalCollectionService, [FromQuery] string internalProblemId)
         {
             var problemId = await globalCollectionService.AddAsync(internalProblemId);
@@ -44,8 +43,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerOperation("DeleteProblems")]
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(long))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
-        [AuthorizeFilter]
-        [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Write, "collectionId")]
+        [AuthorizeFilter(true)]
         public async Task<IActionResult> DeleteProblems([FromServices] IGlobalCollectionService globalCollectionService, [FromBody] long[] problemIds)
         {
             await globalCollectionService.RemoveRangeAsync(problemIds);
@@ -56,7 +54,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerOperation("GetById")]
         [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(GlobalCollectionProblem))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
-        [AuthorizeFilter(true)]
+        [AuthorizeFilter]
         public async Task<IActionResult> Get([FromServices] IGlobalCollectionService globalCollectionService, long id)
         {
             var problem = await globalCollectionService.GetProblemAsync(id);

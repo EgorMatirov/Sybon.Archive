@@ -18,6 +18,7 @@ using Sybon.Archive.Repositories.GlobalCollectionRepository;
 using Sybon.Archive.Repositories.ProblemsRepository;
 using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.CollectionsService.Models;
+using Sybon.Archive.Services.GlobalCollectionService;
 using Sybon.Archive.Services.InternalProblemsService;
 using Sybon.Archive.Services.ProblemsService;
 using Sybon.Auth.Client.Api;
@@ -74,6 +75,9 @@ namespace Sybon.Archive
             
             services.AddScoped<ICollectionsRepository, CollectionsRepository>();
             services.AddScoped<ICollectionsService, CollectionsService>();
+            
+            services.AddScoped<IGlobalCollectionRepository, GlobalCollectionRepository>();
+            services.AddScoped<IGlobalCollectionService, GlobalCollectionService>();
 
             services.AddSingleton<IAccountApi>(new AccountApi(AuthClientConfiguration));
             services.AddSingleton<IPermissionsApi>(new PermissionsApi(AuthClientConfiguration));
@@ -103,7 +107,8 @@ namespace Sybon.Archive
                 config.CreateMap<ProblemCollectionWithProblems, Collection>();
                 config.CreateMap<Problem, Services.ProblemsService.Models.Problem>();
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
-                config.CreateMap<GlobalCollectionProblem, Problem>();
+                config.CreateMap<GlobalCollectionProblem, Services.ProblemsService.Models.Problem>();
+                config.CreateMap<GlobalCollectionProblem, Services.GlobalCollectionService.Models.GlobalCollectionProblem>();
                 config.CreateMap<CollectionForm, Collection>();
                 config.CreateMap<CollectionForm.ProblemModel, Problem>();
             });
