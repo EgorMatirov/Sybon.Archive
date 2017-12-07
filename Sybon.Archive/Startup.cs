@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
+using Bacs.Archive.TestFetcher;
 using Bacs.StatementProvider;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
@@ -78,6 +79,9 @@ namespace Sybon.Archive
             services.AddSingleton<IPermissionsApi>(new PermissionsApi(AuthClientConfiguration));
             services.AddSingleton<IArchiveClient, IArchiveClient>(CreateArchiveClient);
             services.AddSingleton<StatementProvider, StatementProvider>(CreateStatementProvider);
+
+            services.AddSingleton<ITestsFetcher, TestsFetcher>();
+            
             services.AddSingleton<IMapper, IMapper>(CreateMapper);
         }
 
@@ -104,6 +108,7 @@ namespace Sybon.Archive
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
                 config.CreateMap<CollectionForm, Collection>();
                 config.CreateMap<CollectionForm.ProblemModel, Problem>();
+                config.CreateMap<Test, Services.ProblemsService.Models.Test>();
             });
             return Mapper.Instance;
         }
