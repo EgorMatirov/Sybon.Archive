@@ -32,10 +32,7 @@ namespace Sybon.Archive.Controllers
         [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Read, "id")]
         public async Task<IActionResult> Get([FromServices] ICollectionsService collectionsService, long id)
         {
-            var collection = await collectionsService.FindAsync(id);
-            foreach (var problem in collection.Problems)
-                problem.InternalProblemId = string.Empty;
-            return Ok(collection);
+            return Ok(await collectionsService.FindAsync(id));
         }
 
         [HttpPost]
