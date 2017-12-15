@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Sybon.Archive.Repositories.ProblemsRepository;
-using Sybon.Auth;
+using Sybon.Common;
 
 namespace Sybon.Archive.Repositories.CollectionsRepository
 {

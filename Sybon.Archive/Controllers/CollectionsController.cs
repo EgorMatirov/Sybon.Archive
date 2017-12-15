@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.CollectionsService.Models;
 using Sybon.Archive.Services.ProblemsService;
+using Sybon.Common;
 
 namespace Sybon.Archive.Controllers
 {

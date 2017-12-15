@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Sybon.Archive.Services.ProblemsService;
+using Sybon.Common;
 using Problem = Sybon.Archive.Services.ProblemsService.Models.Problem;
 
 namespace Sybon.Archive.Controllers

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Sybon.Archive.Services.ProblemsService.Models;
+﻿using Sybon.Archive.Services.ProblemsService.Models;
 
 namespace Sybon.Archive.Services.InternalProblemsService
 {

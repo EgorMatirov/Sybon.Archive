@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Sybon.Auth;
+using Sybon.Common;
 
 namespace Sybon.Archive.Repositories.ProblemsRepository
 {

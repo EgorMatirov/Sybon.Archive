@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
 using Bacs.Archive.TestFetcher;
 using Bacs.StatementProvider;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
 using Sybon.Archive.Repositories.CollectionsRepository;
 using Sybon.Archive.Repositories.ProblemsRepository;
 using Sybon.Archive.Services.CollectionsService;
@@ -51,14 +47,8 @@ namespace Sybon.Archive
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "Sybon.Archive", Version = "v1" });
-                c.DescribeAllEnumsAsStrings();
-                c.AddSecurityDefinition("api_key", new ApiKeyScheme {In = "query", Name = "api_key"});
-                c.OperationFilter<SwaggerApiKeySecurityFilter>();
-            });
+
+            services.AddSwagger("Sybon.Archive", "v1");
             
             services.AddDbContext<ArchiveContext>(options =>
             {
