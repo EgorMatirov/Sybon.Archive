@@ -15,7 +15,7 @@ namespace Sybon.Archive.Controllers
         [SwaggerOperation("GetById")]
         [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(Problem))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
-        [AuthorizeFilter(true)]
+        [ProblemPermissionFilter(ProblemPermissionFilterAttribute.Type.Read, "id")]
         public async Task<IActionResult> Get([FromServices] IProblemsService problemsService, long id)
         {
             var problem = await problemsService.GetAsync(id);
@@ -24,7 +24,7 @@ namespace Sybon.Archive.Controllers
 
         [HttpGet("{id}/statement")]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
-        [AuthorizeFilter(true)]
+        [ProblemPermissionFilter(ProblemPermissionFilterAttribute.Type.Read, "id")]
         public async Task<IActionResult>  Statement([FromServices] IProblemsService problemsService, long id)
         {
             var url = await problemsService.GetStatementUrlAsync(id);

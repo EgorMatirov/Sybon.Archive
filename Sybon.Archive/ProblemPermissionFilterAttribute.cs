@@ -5,7 +5,7 @@ using Sybon.Auth.Client.Api;
 
 namespace Sybon.Archive
 {
-    public class CollectionPermissionFilterAttribute : PermissionFilterAttributeBase
+    public class ProblemPermissionFilterAttribute : PermissionFilterAttributeBase
     {
         public enum Type
         {
@@ -17,7 +17,7 @@ namespace Sybon.Archive
         private readonly Type _type;
         private readonly string _id;
 
-        public CollectionPermissionFilterAttribute(Type type, string id)
+        public ProblemPermissionFilterAttribute(Type type, string id)
         {
             _type = type;
             _id = id;
@@ -36,7 +36,7 @@ namespace Sybon.Archive
                 throw new Exception("Controller must derive from ILogged");
 
             var haveAccess = GetService<IPermissionsApi>(context)
-                .GetToCollection(controller.UserId, GetValueFromContext(context, _id))
+                .GetToProblem(controller.UserId, GetValueFromContext(context, _id))
                 .Contains(_type.ToString());
             
             if(!haveAccess)
