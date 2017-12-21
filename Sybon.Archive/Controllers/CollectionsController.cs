@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -7,6 +8,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.CollectionsService.Models;
 using Sybon.Archive.Services.ProblemsService;
+using Sybon.Auth.Client.Api;
 using Sybon.Common;
 
 namespace Sybon.Archive.Controllers
@@ -19,10 +21,15 @@ namespace Sybon.Archive.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ICollection<ProblemCollection>))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
-        public async Task<IActionResult> Get([FromServices] ICollectionsService collectionsService, [FromQuery] Pagination pagination)
+        public async Task<IActionResult> Get([FromServices] ICollectionsService collectionsService,
+            [FromServices] IPermissionsApi permissionsApi, [FromQuery] Pagination pagination)
         {
-            var collections = await collectionsService.GetRangeAsync(pagination.Offset, pagination.Limit);
-            return Ok(collections);
+            var collections = await collectionsService.GetAll();
+            var result = collections
+                .Where(x => permissionsApi.GetToCollection(UserId, x.Id).Contains("Read")).OrderBy(x => x.Id)
+                .Skip(pagination.Offset)
+                .Take(pagination.Limit);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

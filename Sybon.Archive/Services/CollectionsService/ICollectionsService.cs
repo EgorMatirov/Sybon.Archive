@@ -7,7 +7,7 @@ namespace Sybon.Archive.Services.CollectionsService
     {
         Task<long> AddAsync(long userId, CollectionForm collection);
         Task<ProblemCollection> FindAsync(long id);
-        Task<ProblemCollection[]> GetRangeAsync(int offset, int limit);
+        Task<ProblemCollection[]> GetAll();
         Task<bool> ExistsAsync(long id);
         Task RemoveRangeAsync(long[] collectionIds);
     }

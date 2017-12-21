@@ -20,22 +20,6 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
                 .SingleOrDefaultAsync(collection => collection.Id == key);
         }
 
-        public Task<CollectionModelWithProblemsCount[]> GetRangeAsync(int offset, int limit)
-        {
-            return Context.Collections
-                .OrderBy(x => x.Id)
-                .Skip(offset)
-                .Take(limit)
-                .Select(x => new CollectionModelWithProblemsCount
-                {
-                    Id = x.Id,
-                    Description = x.Description,
-                    Name = x.Name,
-                    ProblemsCount = x.Problems.Count
-                })
-                .ToArrayAsync();
-        }
-
         public Task<bool> ExistsAsync(long id)
         {
             return Context.Collections.AnyAsync(x => x.Id == id);
@@ -45,6 +29,19 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
         {
             object[] dbEntities = await Context.Collections.Where(x => collectionIds.Contains(x.Id)).ToArrayAsync();
             Context.RemoveRange(dbEntities);
+        }
+
+        public Task<CollectionModelWithProblemsCount[]> GetAllWithProblemsCount()
+        {
+            return Context.Collections
+                .Select(x => new CollectionModelWithProblemsCount
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Name = x.Name,
+                    ProblemsCount = x.Problems.Count
+                })
+                .ToArrayAsync();
         }
     }
 }

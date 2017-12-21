@@ -48,9 +48,9 @@ namespace Sybon.Archive.Services.CollectionsService
             return problemCollection;
         }
 
-        public async Task<ProblemCollection[]> GetRangeAsync(int offset, int limit)
+        public async Task<ProblemCollection[]> GetAll()
         {
-            var dbEntries = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().GetRangeAsync(offset, limit);
+            var dbEntries = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().GetAllWithProblemsCount();
             var mapped = dbEntries.Select(e => _mapper.Map<ProblemCollection>(e));
             return mapped.ToArray();
         }
