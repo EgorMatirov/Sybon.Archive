@@ -16,7 +16,7 @@ namespace Sybon.Archive.Controllers
     {
         [HttpGet]
         [SwaggerOperation("Get")]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ICollection<ProblemCollectionWithoutProblems>))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ICollection<ProblemCollection>))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
         public async Task<IActionResult> Get([FromServices] ICollectionsService collectionsService, [FromQuery] Pagination pagination)
@@ -27,7 +27,7 @@ namespace Sybon.Archive.Controllers
 
         [HttpGet("{id}")]
         [SwaggerOperation("GetById")]
-        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ProblemCollectionWithProblems))]
+        [SwaggerResponse((int)HttpStatusCode.OK, Type = typeof(ProblemCollection))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
         [CollectionPermissionFilter(CollectionPermissionFilterAttribute.Type.Read, "id")]

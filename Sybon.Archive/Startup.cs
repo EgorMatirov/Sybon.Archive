@@ -91,9 +91,10 @@ namespace Sybon.Archive
         {
             Mapper.Initialize(config =>
             {
-                config.CreateMap<Collection, ProblemCollectionWithProblems>();
-                config.CreateMap<CollectionModelWithProblemsCount, ProblemCollectionWithoutProblems>();
-                config.CreateMap<ProblemCollectionWithProblems, Collection>();
+                config.CreateMap<Collection, ProblemCollection>();
+                config.CreateMap<CollectionModelWithProblemsCount, ProblemCollection>()
+                    .AfterMap((from, to) => to.Problems = new Services.ProblemsService.Models.Problem[0]);
+                config.CreateMap<ProblemCollection, Collection>();
                 config.CreateMap<Problem, Services.ProblemsService.Models.Problem>();
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
                 config.CreateMap<CollectionForm, Collection>();
