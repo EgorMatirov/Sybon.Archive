@@ -6,7 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
-    <PackageReference Include="Sybon.Common" Version="0.2.0" />
     <PackageReference Include="Bacs.Archive.Client" Version="0.1.1" />
     <PackageReference Include="Bacs.Archive.TestFetcher" Version="0.1.1" />
     <PackageReference Include="Bacs.StatementProvider" Version="0.1.1" />
@@ -19,6 +18,7 @@
     <PackageReference Include="FubarCoder.RestSharp.Portable.Core" Version="4.0.7" />
     <PackageReference Include="FubarCoder.RestSharp.Portable.HttpClient" Version="4.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
+    <PackageReference Include="Sybon.Common" Version="0.2.1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nlog.config" CopyToOutputDirectory="Always" />
