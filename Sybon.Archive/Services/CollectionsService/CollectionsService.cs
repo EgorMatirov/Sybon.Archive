@@ -27,10 +27,13 @@ namespace Sybon.Archive.Services.CollectionsService
         public async Task<long> AddAsync(long userId, CollectionForm collection)
         {
             // TODO: Add permission by userId?
-            var problemsIds = collection.Problems.Select(x => x.InternalProblemId).ToArray();
-            var allProblemsExists = _internalProblemsService.Exists(problemsIds);
-            if(!allProblemsExists)
-                throw new KeyNotFoundException("Problem not found");
+            if (collection.Problems != null)
+            {
+                var problemsIds = collection.Problems.Select(x => x.InternalProblemId).ToArray();
+                var allProblemsExists = _internalProblemsService.Exists(problemsIds);
+                if(!allProblemsExists)
+                    throw new KeyNotFoundException("Problem not found");
+            }
             var dbEntry = _mapper.Map<Collection>(collection);
             await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().AddAsync(dbEntry);
             await _repositoryUnitOfWork.SaveChangesAsync();
