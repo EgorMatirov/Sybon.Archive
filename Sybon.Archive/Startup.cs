@@ -46,6 +46,7 @@ namespace Sybon.Archive
         [UsedImplicitly]
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
             services.AddMvc();
 
             services.AddSwagger("Sybon.Archive", "v1");
@@ -79,6 +80,7 @@ namespace Sybon.Archive
         [UsedImplicitly]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(builder => builder.AllowAnyOrigin());
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
