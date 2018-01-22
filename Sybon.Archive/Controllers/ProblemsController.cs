@@ -24,6 +24,8 @@ namespace Sybon.Archive.Controllers
         }
 
         [HttpGet("{id}/statement")]
+        [SwaggerOperation("GetStatement")]
+        [SwaggerResponse((int) HttpStatusCode.OK, Type = typeof(string))]
         [SwaggerOperationFilter(typeof(SwaggerApiKeySecurityFilter))]
         [AuthorizeFilter]
         [ProblemPermissionFilter(ProblemPermissionFilterAttribute.Type.Read, "id")]
