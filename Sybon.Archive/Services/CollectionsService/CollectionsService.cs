@@ -3,9 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using JetBrains.Annotations;
+using Sybon.Archive.Repositories.CachedInternalProblemsRepository;
 using Sybon.Archive.Repositories.CollectionsRepository;
+using Sybon.Archive.Services.CachedInternalProblemsService;
 using Sybon.Archive.Services.CollectionsService.Models;
-using Sybon.Archive.Services.InternalProblemsService;
 using Sybon.Common;
 
 namespace Sybon.Archive.Services.CollectionsService
@@ -15,13 +16,13 @@ namespace Sybon.Archive.Services.CollectionsService
     {
         private readonly IRepositoryUnitOfWork _repositoryUnitOfWork;
         private readonly IMapper _mapper;
-        private readonly IInternalProblemsService _internalProblemsService;
+        private readonly ICachedInternalProblemsService _cachedInternalProblemsService;
         
-        public CollectionsService(IRepositoryUnitOfWork repositoryUnitOfWork, IMapper mapper, IInternalProblemsService internalProblemsService)
+        public CollectionsService(IRepositoryUnitOfWork repositoryUnitOfWork, IMapper mapper, ICachedInternalProblemsService cachedInternalProblemsService)
         {
             _repositoryUnitOfWork = repositoryUnitOfWork;
             _mapper = mapper;
-            _internalProblemsService = internalProblemsService;
+            _cachedInternalProblemsService = cachedInternalProblemsService;
         }
 
         public async Task<long> AddAsync(long userId, CollectionForm collection)
@@ -30,7 +31,7 @@ namespace Sybon.Archive.Services.CollectionsService
             if (collection.Problems != null)
             {
                 var problemsIds = collection.Problems.Select(x => x.InternalProblemId).ToArray();
-                var allProblemsExists = _internalProblemsService.Exists(problemsIds);
+                var allProblemsExists = await _cachedInternalProblemsService.ExistsAsync(problemsIds);
                 if(!allProblemsExists)
                     throw new KeyNotFoundException("Problem not found");
             }
@@ -44,8 +45,9 @@ namespace Sybon.Archive.Services.CollectionsService
         {
             var dbEntry = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().FindAsync(id);
             var problemCollection = _mapper.Map<ProblemCollection>(dbEntry);
-            problemCollection.Problems = problemCollection.Problems
-                .Select(_internalProblemsService.FetchProblemInfo)
+            var tasks = problemCollection.Problems.Select(_cachedInternalProblemsService.FetchProblemInfoAsync);
+            var results = await Task.WhenAll(tasks);
+            problemCollection.Problems = results
                 .Where(x => x != null)
                 .ToArray();
             return problemCollection;

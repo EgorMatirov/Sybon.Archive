@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="6.1.1" />
-    <PackageReference Include="Bacs.Archive.Client" Version="0.1.1" />
+    <PackageReference Include="Bacs.Archive.Client" Version="0.3.0" />
     <PackageReference Include="Bacs.Archive.TestFetcher" Version="0.1.1" />
     <PackageReference Include="Bacs.StatementProvider" Version="0.1.1" />
     <PackageReference Include="BouncyCastle.NetCore" Version="1.8.1.3" />

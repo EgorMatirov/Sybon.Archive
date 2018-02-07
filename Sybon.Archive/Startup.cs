@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
 using Bacs.Archive.TestFetcher;
@@ -10,15 +11,21 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Sybon.Archive.HostedServices;
+using Sybon.Archive.Repositories.CachedInternalProblemsRepository;
+using Sybon.Archive.Repositories.CachedTestsRepository;
+using Sybon.Archive.Repositories.CacheRevisionRepository;
 using Sybon.Archive.Repositories.CollectionsRepository;
 using Sybon.Archive.Repositories.ProblemsRepository;
+using Sybon.Archive.Services.CachedInternalProblemsService;
 using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.CollectionsService.Models;
-using Sybon.Archive.Services.InternalProblemsService;
 using Sybon.Archive.Services.ProblemsService;
 using Sybon.Auth.Client.Api;
 using Sybon.Auth.Client.Client;
 using Sybon.Common;
+using CachedInternalProblemRevision = Sybon.Archive.Repositories.CachedInternalProblemsRepository.CachedInternalProblemRevision;
 
 namespace Sybon.Archive
 {
@@ -61,7 +68,10 @@ namespace Sybon.Archive
             services.AddScoped<IProblemsRepository, ProblemsRepository>();
             services.AddScoped<IProblemsService, ProblemsService>();
             
-            services.AddScoped<IInternalProblemsService, InternalProblemsService>();
+            services.AddScoped<ICachedInternalProblemsService, CachedInternalProblemsService>();
+            services.AddScoped<ICachedInternalProblemsRepository, CachedInternalProblemsRepository>();
+            services.AddScoped<ICachedTestsRepository, CachedTestsRepository>();
+            services.AddScoped<ICacheRevisionRepository, CacheRevisionRepository>();
             
             services.AddScoped<ICollectionsRepository, CollectionsRepository>();
             services.AddScoped<ICollectionsService, CollectionsService>();
@@ -74,6 +84,8 @@ namespace Sybon.Archive
             services.AddSingleton<ITestsFetcher, TestsFetcher>();
             
             services.AddSingleton<IMapper, IMapper>(CreateMapper);
+            
+            services.AddSingleton<IHostedService, ArchiveCacheSynchronizer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -102,6 +114,8 @@ namespace Sybon.Archive
                 config.CreateMap<CollectionForm, Collection>();
                 config.CreateMap<CollectionForm.ProblemModel, Problem>();
                 config.CreateMap<Test, Services.ProblemsService.Models.Test>();
+                config.CreateMap<CachedInternalProblemRevision, Services.CachedInternalProblemsService.CachedInternalProblemRevision>();
+                config.CreateMap<CachedTest, Services.ProblemsService.Models.Test>();
             });
             return Mapper.Instance;
         }

@@ -11,9 +11,10 @@ using System;
 namespace Sybon.Archive.Migrations
 {
     [DbContext(typeof(ArchiveContext))]
-    partial class ArchiveContextModelSnapshot : ModelSnapshot
+    [Migration("20180205132116_AddCachedProblemAndTests")]
+    partial class AddCachedProblemAndTests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,8 +31,6 @@ namespace Sybon.Archive.Migrations
                     b.Property<long>("MemoryLimitBytes");
 
                     b.Property<string>("Name");
-
-                    b.Property<byte[]>("Revision");
 
                     b.Property<string>("StatementUrl");
 
@@ -62,18 +61,6 @@ namespace Sybon.Archive.Migrations
                     b.HasIndex("ProblemId");
 
                     b.ToTable("CachedTests");
-                });
-
-            modelBuilder.Entity("Sybon.Archive.Repositories.CacheRevisionRepository.CacheRevision", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Revision");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CacheRevisions");
                 });
 
             modelBuilder.Entity("Sybon.Archive.Repositories.CollectionsRepository.Collection", b =>
