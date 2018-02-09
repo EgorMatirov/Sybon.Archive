@@ -45,11 +45,6 @@ namespace Sybon.Archive.Services.CollectionsService
         {
             var dbEntry = await _repositoryUnitOfWork.GetRepository<ICollectionsRepository>().FindAsync(id);
             var problemCollection = _mapper.Map<ProblemCollection>(dbEntry);
-            var tasks = problemCollection.Problems.Select(_cachedInternalProblemsService.FetchProblemInfoAsync);
-            var results = await Task.WhenAll(tasks);
-            problemCollection.Problems = results
-                .Where(x => x != null)
-                .ToArray();
             return problemCollection;
         }
 

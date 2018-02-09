@@ -8,7 +8,9 @@ using Bacs.StatementProvider;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,10 +24,13 @@ using Sybon.Archive.Services.CachedInternalProblemsService;
 using Sybon.Archive.Services.CollectionsService;
 using Sybon.Archive.Services.CollectionsService.Models;
 using Sybon.Archive.Services.ProblemsService;
+using Sybon.Archive.Services.ProblemsService.Models;
 using Sybon.Auth.Client.Api;
 using Sybon.Auth.Client.Client;
 using Sybon.Common;
 using CachedInternalProblemRevision = Sybon.Archive.Repositories.CachedInternalProblemsRepository.CachedInternalProblemRevision;
+using Problem = Sybon.Archive.Repositories.ProblemsRepository.Problem;
+using Test = Bacs.Archive.TestFetcher.Test;
 
 namespace Sybon.Archive
 {
@@ -109,7 +114,20 @@ namespace Sybon.Archive
                 config.CreateMap<CollectionModelWithProblemsCount, ProblemCollection>()
                     .AfterMap((from, to) => to.Problems = new Services.ProblemsService.Models.Problem[0]);
                 config.CreateMap<ProblemCollection, Collection>();
-                config.CreateMap<Problem, Services.ProblemsService.Models.Problem>();
+                config.CreateMap<Problem, Services.ProblemsService.Models.Problem>()
+                    .AfterMap((from, to) =>
+                    {
+                        to.Name = from.CachedInternalProblem.Name;
+                        to.StatementUrl = from.CachedInternalProblem.StatementUrl;
+                        to.TestsCount = from.CachedInternalProblem.TestsCount;
+                        to.ResourceLimits = new ResourceLimits
+                        {
+                            MemoryLimitBytes = from.CachedInternalProblem.MemoryLimitBytes,
+                            TimeLimitMillis = from.CachedInternalProblem.TimeLimitMillis
+                        };
+                        to.Pretests = serviceProvider.GetService<IMapper>()
+                            .Map<Services.ProblemsService.Models.Test[]>(from.CachedInternalProblem.Pretests);
+                    });
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
                 config.CreateMap<CollectionForm, Collection>();
                 config.CreateMap<CollectionForm.ProblemModel, Problem>();

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Sybon.Archive.Repositories.CachedInternalProblemsRepository;
 using Sybon.Archive.Repositories.CollectionsRepository;
 using Sybon.Common;
 
@@ -14,5 +15,6 @@ namespace Sybon.Archive.Repositories.ProblemsRepository
         [Required]
         [MaxLength(100)]
         public string InternalProblemId { get; set; }
+        public CachedInternalProblem CachedInternalProblem { get; set; }
     }
 }

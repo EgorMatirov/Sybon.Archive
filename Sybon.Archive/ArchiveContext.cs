@@ -36,6 +36,12 @@ namespace Sybon.Archive
                 .HasForeignKey(x => x.ProblemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Problem>()
+                .HasOne(x => x.CachedInternalProblem)
+                .WithMany(x => x.Problems)
+                .HasForeignKey(x => x.InternalProblemId)
+                .HasPrincipalKey(x => x.InternalProblemId);
+
             base.OnModelCreating(modelBuilder);
         }
     }
