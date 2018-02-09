@@ -5,12 +5,11 @@
     <!-- workaround https://github.com/dotnet/core-setup/issues/2981 -->
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="App.Metrics.AspNetCore" Version="2.0.0-stable-0066" />
-    <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="2.0.0-stable-0066" />
-    <PackageReference Include="App.Metrics.AspNetCore.Reporting" Version="2.0.0-stable-0066" />
-    <PackageReference Include="App.Metrics.AspNetCore.Tracking" Version="2.0.0-stable-0066" />
-    <PackageReference Include="App.Metrics.Reporting.Elasticsearch" Version="2.0.0-beta-0035" />
-    <PackageReference Include="App.Metrics.Reporting.InfluxDB" Version="2.0.0-stable-0039" />
+    <PackageReference Include="App.Metrics.AspNetCore" Version="2.0.0-preview1" />
+    <PackageReference Include="App.Metrics.AspNetCore.Mvc" Version="2.0.0-preview1" />
+    <PackageReference Include="App.Metrics.AspNetCore.Reporting" Version="2.0.0-preview1" />
+    <PackageReference Include="App.Metrics.AspNetCore.Tracking" Version="2.0.0-preview1" />
+    <PackageReference Include="App.Metrics.Reporting.InfluxDB" Version="2.0.0-preview1" />
     <PackageReference Include="AutoMapper" Version="6.1.1" />
     <PackageReference Include="Bacs.Archive.Client" Version="0.3.0" />
     <PackageReference Include="Bacs.Archive.TestFetcher" Version="0.1.1" />
