@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using App.Metrics;
+using App.Metrics.Extensions.Configuration;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
 using Bacs.Archive.TestFetcher;
@@ -10,7 +11,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,6 +36,8 @@ namespace Sybon.Archive
 {
     public class Startup
     {
+        private const string ServiceName = "Sybon.Archive";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -59,9 +61,33 @@ namespace Sybon.Archive
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-            services.AddMvc();
 
-            services.AddSwagger("Sybon.Archive", "v1");
+            var metrics = AppMetrics.CreateDefaultBuilder()
+                .Report.ToInfluxDb(options =>
+                {
+                    options.InfluxDb.Password = SecurityConfiguration.InfluxDb.Password;
+                    options.InfluxDb.UserName = SecurityConfiguration.InfluxDb.UserName;
+                    options.InfluxDb.BaseUri = new Uri(SecurityConfiguration.InfluxDb.Url);
+                    options.InfluxDb.Database = SecurityConfiguration.InfluxDb.Database;
+                    options.FlushInterval = TimeSpan.FromSeconds(1);
+                })
+                .Configuration.ReadFrom(Configuration)
+                .Configuration.Configure(
+                        options =>
+                        {
+                            options.AddAppTag(ServiceName);
+                            options.AddEnvTag("development");
+                        })
+                .Build();
+
+            services.AddMetrics(metrics);
+            services.AddMetricsReportScheduler();
+            services.AddMetricsTrackingMiddleware();
+            services.AddMetricsEndpoints();
+            
+            services.AddMvc(options => options.AddMetricsResourceFilter());
+
+            services.AddSwagger(ServiceName, "v1");
             
             services.AddDbContext<ArchiveContext>(options =>
             {
@@ -98,6 +124,8 @@ namespace Sybon.Archive
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseMetricsAllMiddleware();
+            app.UseMetricsAllEndpoints();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

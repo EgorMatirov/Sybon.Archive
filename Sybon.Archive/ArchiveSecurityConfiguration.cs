@@ -56,6 +56,22 @@ namespace Sybon.Archive
         public BacsArchiveConfiguration BacsArchive => new BacsArchiveConfiguration(Configuration.GetSection("BacsArchive"));
         public BacsStatementConfiguration BacsStatement => new BacsStatementConfiguration(Configuration.GetSection("BacsStatement"));
         public SybonAuthConfiguration SybonAuth => new SybonAuthConfiguration(Configuration.GetSection("SybonAuth"));
+        public InfluxDbConfiguration InfluxDb => new InfluxDbConfiguration(Configuration.GetSection("InfluxDb"));
         public string ApiKey => Configuration.GetValue<string>("ApiKey");
+    }
+
+    public class InfluxDbConfiguration
+    {
+        public InfluxDbConfiguration(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+        
+        private IConfiguration Configuration { get; }
+            
+        public string Url => Configuration.GetValue<string>("Url");
+        public string Password => Configuration.GetValue<string>("Password");
+        public string UserName => Configuration.GetValue<string>("UserName");
+        public string Database => Configuration.GetValue<string>("Database");
     }
 }
