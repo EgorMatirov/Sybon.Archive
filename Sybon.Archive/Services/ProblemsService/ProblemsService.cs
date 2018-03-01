@@ -40,7 +40,7 @@ namespace Sybon.Archive.Services.ProblemsService
             var problem = await _repositoryUnitOfWork.GetRepository<IProblemsRepository>().FindAsync(id);
             if(problem == null) throw new ArgumentException($"Problem with id = {id} does not exist");
             
-            return await _cachedInternalProblemsService.FetchProblemInfoAsync(_mapper.Map<Problem>(problem));
+            return _mapper.Map<Problem>(problem);
         }
 
         public async Task<long> AddAsync(long collectionId, string internalProblemId)
