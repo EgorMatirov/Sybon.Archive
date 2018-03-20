@@ -155,6 +155,9 @@ namespace Sybon.Archive
                         };
                         to.Pretests = serviceProvider.GetService<IMapper>()
                             .Map<Services.ProblemsService.Models.Test[]>(from.CachedInternalProblem.Pretests);
+
+                        to.InputFileName = from.CachedInternalProblem.InputFileName;
+                        to.OutputFileName = from.CachedInternalProblem.OutputFileName;
                     });
                 config.CreateMap<Services.ProblemsService.Models.Problem, Problem>();
                 config.CreateMap<CollectionForm, Collection>();

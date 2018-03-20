@@ -9,6 +9,9 @@
         public int TestsCount { get; set; }
         public Test[] Pretests { get; set; }
         
+        public string InputFileName { get; set; }
+        public string OutputFileName { get; set; }
+        
         public string InternalProblemId { get; set; }
         public ResourceLimits ResourceLimits { get; set; }
     }

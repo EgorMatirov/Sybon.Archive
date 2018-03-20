@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Sybon.Archive.Repositories.CachedTestsRepository;
 using Sybon.Archive.Repositories.ProblemsRepository;
@@ -24,6 +22,9 @@ namespace Sybon.Archive.Repositories.CachedInternalProblemsRepository
         
         public long TimeLimitMillis { get; set; }
         public long MemoryLimitBytes { get; set; }
+        
+        public string InputFileName { get; set; }
+        public string OutputFileName { get; set; }
         
         public ICollection<Problem> Problems { get; set; }
     }

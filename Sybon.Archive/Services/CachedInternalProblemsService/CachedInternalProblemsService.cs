@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using AutoMapper;
 using Bacs.Archive.Client.CSharp;
@@ -143,9 +144,17 @@ namespace Sybon.Archive.Services.CachedInternalProblemsService
             cachedProblem.TestsCount = testGroups.Sum(x => x.Tests.Query.Count);
             cachedProblem.MemoryLimitBytes = (long) testGroups.First().Process.ResourceLimits.MemoryLimitBytes;
             cachedProblem.TimeLimitMillis = (long) testGroups.First().Process.ResourceLimits.TimeLimitMillis;
+            cachedProblem.InputFileName = ExtractFileName(testGroups, "stdin");
+            cachedProblem.OutputFileName = ExtractFileName(testGroups, "stdout");
 
             await UpdatePretests(internalId, cachedProblem, testGroups);
             await _repositoryUnitOfWork.SaveChangesAsync();
+        }
+
+        private static string ExtractFileName(IEnumerable<TestGroup> testGroups, string fileName)
+        {
+            var file = testGroups.First().Process.File.FirstOrDefault(x => x.Id.Equals(fileName));
+            return file?.Path == null ? fileName.ToUpper() : file.Path.Element.Last();
         }
 
         private string ExtractStatementUrl([NotNull] Problem internalProblem)
@@ -163,7 +172,7 @@ namespace Sybon.Archive.Services.CachedInternalProblemsService
         {
             var cachedTestsRepository = _repositoryUnitOfWork.GetRepository<ICachedTestsRepository>();
 
-            if(cachedProblem.Pretests != null)
+            if (cachedProblem.Pretests != null)
             {
                 var removeTasks = cachedProblem.Pretests.Select(x => cachedTestsRepository.RemoveAsync(x.Id));
                 Task.WaitAll(removeTasks.ToArray());
@@ -171,7 +180,7 @@ namespace Sybon.Archive.Services.CachedInternalProblemsService
 
             var pretests = ExtractPretests(internalId, cachedProblem, testGroups);
             var addTasks = pretests.Select(x => cachedTestsRepository.AddAsync(x));
-            
+
             return Task.WhenAll(addTasks.ToArray());
         }
 
