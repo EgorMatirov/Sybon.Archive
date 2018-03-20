@@ -67,7 +67,7 @@ namespace Sybon.Archive.HostedServices
                             failedIds.AddRange(await HandleBatchOperation(outdatedProblems,
                                 cachedInternalProblemService.UpdateAsync));
 
-                            var toBeAddedToGlobal = outdatedProblems.Concat(notCachedProblems).Except(failedIds);
+                            var toBeAddedToGlobal = notCachedProblems.Except(failedIds);
                             await HandleBatchOperation(toBeAddedToGlobal,
                                 async s => await problemsService.AddAsync(1, s));
                         }
