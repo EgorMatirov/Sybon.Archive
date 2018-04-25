@@ -164,7 +164,8 @@ namespace Sybon.Archive
                 config.CreateMap<CollectionForm.ProblemModel, Problem>();
                 config.CreateMap<Test, Services.ProblemsService.Models.Test>();
                 config.CreateMap<CachedInternalProblemRevision, Services.CachedInternalProblemsService.CachedInternalProblemRevision>();
-                config.CreateMap<CachedTest, Services.ProblemsService.Models.Test>();
+                config.CreateMap<CachedTest, Services.ProblemsService.Models.Test>()
+                    .AfterMap((from, to) => { to.Id = from.InternalId; });
             });
             return Mapper.Instance;
         }

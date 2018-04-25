@@ -18,6 +18,7 @@ namespace Sybon.Archive.Repositories.CollectionsRepository
             return Context.Collections
                 .Include(x => x.Problems)
                 .ThenInclude(x => x.CachedInternalProblem)
+                .ThenInclude(x => x.Pretests)
                 .SingleOrDefaultAsync(collection => collection.Id == key);
         }
 
