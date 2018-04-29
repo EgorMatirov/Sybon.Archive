@@ -21,7 +21,10 @@ namespace Sybon.Archive.Repositories.ProblemsRepository
 
         public new Task<Problem> FindAsync(long key)
         {
-            return Context.Problems.Include(x => x.CachedInternalProblem).SingleOrDefaultAsync(x => x.Id == key);
+            return Context.Problems
+                .Include(x => x.CachedInternalProblem)
+                .ThenInclude(x => x.Pretests)
+                .SingleOrDefaultAsync(x => x.Id == key);
         }
     }
 }
