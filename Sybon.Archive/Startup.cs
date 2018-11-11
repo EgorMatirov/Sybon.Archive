@@ -146,6 +146,8 @@ namespace Sybon.Archive
                     .AfterMap((from, to) =>
                     {
                         to.Name = from.CachedInternalProblem.Name;
+                        to.Author = from.CachedInternalProblem.Author;
+                        to.Format = from.CachedInternalProblem.Format;
                         to.StatementUrl = from.CachedInternalProblem.StatementUrl;
                         to.TestsCount = from.CachedInternalProblem.TestsCount;
                         to.ResourceLimits = new ResourceLimits
