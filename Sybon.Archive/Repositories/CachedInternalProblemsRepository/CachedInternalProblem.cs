@@ -15,17 +15,19 @@ namespace Sybon.Archive.Repositories.CachedInternalProblemsRepository
         public byte[] Revision { get; set; }
         
         public string Name { get; set; }
+        public string Author { get; set; }
+        public string Format { get; set; }
         public string StatementUrl { get; set; }
-        
+
         public int TestsCount { get; set; }
         public ICollection<CachedTest> Pretests { get; set; }
-        
+
         public long TimeLimitMillis { get; set; }
         public long MemoryLimitBytes { get; set; }
-        
+
         public string InputFileName { get; set; }
         public string OutputFileName { get; set; }
-        
+
         public ICollection<Problem> Problems { get; set; }
     }
 }

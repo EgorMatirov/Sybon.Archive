@@ -11,6 +11,8 @@ using Bacs.StatementProvider;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
 using JetBrains.Annotations;
+using NLog;
+using NLog.Fluent;
 using Sybon.Archive.Repositories.CachedInternalProblemsRepository;
 using Sybon.Archive.Repositories.CachedTestsRepository;
 using Sybon.Archive.Repositories.CacheRevisionRepository;
@@ -139,6 +141,8 @@ namespace Sybon.Archive.Services.CachedInternalProblemsService
             }
 
             cachedProblem.Name = internalProblem.Info.Name.FirstOrDefault()?.Value;
+            cachedProblem.Author = string.Join(",", internalProblem.Info.Author.Concat(internalProblem.Info.Maintainer));
+            cachedProblem.Format = internalProblem.Statement.Version.FirstOrDefault()?.Format;
             cachedProblem.Revision = internalProblem.System?.Revision?.ToByteArray();
             cachedProblem.StatementUrl = ExtractStatementUrl(internalProblem);
             cachedProblem.TestsCount = testGroups.Sum(x => x.Tests.Query.Count);
