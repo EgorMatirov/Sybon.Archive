@@ -132,6 +132,12 @@ namespace Sybon.Archive
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sybon.Archive V1");
             });
             app.UseMvc();
+
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetService<ArchiveContext>();
+                context.Database.Migrate();
+            }
         }
         
         private static IMapper CreateMapper(IServiceProvider serviceProvider)
